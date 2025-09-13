@@ -10,19 +10,6 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// Servir tous les fichiers statiques
-app.use(express.static('.', {
-    setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.css')) {
-            res.setHeader('Content-Type', 'text/css');
-        } else if (filePath.endsWith('.js')) {
-            res.setHeader('Content-Type', 'application/javascript');
-        } else if (filePath.endsWith('.html')) {
-            res.setHeader('Content-Type', 'text/html');
-        }
-    }
-}));
-
 // Chemin vers le fichier de base de données
 const DB_PATH = path.join(__dirname, 'database.json');
 
@@ -67,7 +54,7 @@ async function writeDatabase(data) {
     }
 }
 
-// Routes API simplifiées
+// Routes API
 
 // Login
 app.post('/api/login', async (req, res) => {
@@ -332,9 +319,46 @@ app.post('/api/schedule', async (req, res) => {
     }
 });
 
+// Routes pour servir les fichiers statiques
+app.get('/style.css', async (req, res) => {
+    try {
+        const cssContent = await fs.readFile(path.join(__dirname, 'style.css'), 'utf8');
+        res.setHeader('Content-Type', 'text/css');
+        res.send(cssContent);
+    } catch (error) {
+        res.status(404).send('CSS file not found');
+    }
+});
+
+app.get('/script.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'script.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        res.status(404).send('JS file not found');
+    }
+});
+
+app.get('/api-client.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'api-client.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        res.status(404).send('API client file not found');
+    }
+});
+
 // Route par défaut
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+app.get('/', async (req, res) => {
+    try {
+        const htmlContent = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8');
+        res.setHeader('Content-Type', 'text/html');
+        res.send(htmlContent);
+    } catch (error) {
+        res.status(404).send('HTML file not found');
+    }
 });
 
 // Initialiser et démarrer
