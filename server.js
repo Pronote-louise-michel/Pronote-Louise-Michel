@@ -10,7 +10,23 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-// Servir les fichiers statiques
+// Routes spécifiques pour les fichiers statiques (AVANT express.static)
+app.get('/style.css', (req, res) => {
+    res.setHeader('Content-Type', 'text/css');
+    res.sendFile(path.join(__dirname, 'style.css'));
+});
+
+app.get('/script.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(__dirname, 'script.js'));
+});
+
+app.get('/api-client.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(__dirname, 'api-client.js'));
+});
+
+// Servir les autres fichiers statiques
 app.use(express.static('.', {
     setHeaders: (res, path) => {
         if (path.endsWith('.css')) {
@@ -328,22 +344,6 @@ app.post('/api/schedule', async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Server error' });
     }
-});
-
-// Routes pour les fichiers statiques
-app.get('/style.css', (req, res) => {
-    res.setHeader('Content-Type', 'text/css');
-    res.sendFile(path.join(__dirname, 'style.css'));
-});
-
-app.get('/script.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.sendFile(path.join(__dirname, 'script.js'));
-});
-
-app.get('/api-client.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.sendFile(path.join(__dirname, 'api-client.js'));
 });
 
 // Route par défaut
