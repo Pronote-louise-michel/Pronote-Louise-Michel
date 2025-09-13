@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mon Lycée.net - Portail Étudiant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Page de connexion -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo-section">
+                    <img src="images.png" alt="Île-de-France" class="logo">
+                    <div class="brand">
+                        mon <span class="brand-accent">Lycée</span>.net
+                    </div>
+                </div>
+                <h1>Connexion à l'espace élève</h1>
+                <p>LYCÉE LOUISE MICHEL - LYCÉE POLYVALENT RÉGIONAL</p>
+            </div>
+
+            <div class="login-form-container">
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">Identifiant</label>
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="username" placeholder="Votre identifiant" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" placeholder="Votre mot de passe" required>
+                            <button type="button" class="toggle-password" onclick="togglePassword()">
+                                <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="loginError" class="error-message" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="errorText"></span>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Se souvenir de moi</span>
+                        </label>
+                        <button type="button" class="forgot-password">Mot de passe oublié ?</button>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        <span id="loginBtnText">Se connecter</span>
+                        <div id="loginSpinner" class="spinner" style="display: none;"></div>
+                    </button>
+                </form>
+
+            </div>
+
+            <div class="login-footer">
+                <div class="pronote-brand">PRONOTE</div>
+                <p>© 2025 Index Éducation - Tous droits réservés</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application principale -->
+    <div id="mainApp" class="main-app" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <img src="images.png" alt="Île-de-France" class="header-logo">
+                    <div class="header-brand">
+                        mon <span class="brand-accent">Lycée</span>.net
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-details">
+                            <div class="school-name">LYCÉE LOUISE MICHEL - LYCÉE POLYVALENT RÉGIONAL</div>
+                            <div class="student-info">Espace Élèves - GLODEAN Giorgiana (T STMG3)</div>
+                        </div>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <button class="logout-btn" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Déconnexion</span>
+                        </button>
+                        <div class="pronote-logo">PRONOTE</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="navigation">
+            <div class="nav-content">
+                <div class="nav-desktop">
+                    <button class="nav-item active" data-page="home">
+                        <i class="fas fa-home"></i>
+                        <span>Page d'accueil</span>
+                    </button>
+                    <button class="nav-item" data-page="mes-donnees">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Mes données</span>
+                    </button>
+                    <button class="nav-item" data-page="cahier-textes">
+                        <i class="fas fa-book-open"></i>
+                        <span>Cahier de textes</span>
+                    </button>
+                    <button class="nav-item" data-page="notes">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Notes</span>
+                    </button>
+                    <button class="nav-item" data-page="vie-scolaire">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Vie scolaire</span>
+                    </button>
+                </div>
+                
+                <div class="nav-mobile">
+                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars" id="mobileMenuIcon"></i>
+                        <span id="currentPageTitle">Page d'accueil</span>
+                    </button>
+                    <div class="mobile-menu" id="mobileMenu" style="display: none;">
+                        <button class="mobile-nav-item active" data-page="home">
+                            <i class="fas fa-home"></i>
+                            <span>Page d'accueil</span>
+                        </button>
+                        <button class="mobile-nav-item" data-page="mes-donnees">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Mes données</span>
+                        </button>
+                        <button class="mobile-nav-item" data-page="cahier-textes">
+                            <i class="fas fa-book-open"></i>
+                            <span>Cahier de textes</span>
+                        </button>
+                        <button class="mobile-nav-item" data-page="notes">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Notes</span>
+                        </button>
+                        <button class="mobile-nav-item" data-page="vie-scolaire">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Vie scolaire</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Contenu principal -->
+        <main class="main-content">
+            <!-- Page d'accueil -->
+            <div id="homePage" class="page active">
+                <div class="dashboard-grid">
+                    <!-- Emploi du temps -->
+                    <div class="schedule-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-calendar"></i>
+                                    <h2>Emploi du temps</h2>
+                                </div>
+                                <div class="schedule-nav">
+                                    <button class="nav-btn" onclick="previousDay()">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <span id="currentWeekLabel">Lundi 2 septembre</span>
+                                    <button class="nav-btn" onclick="nextDay()">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="scheduleContent" class="schedule-content">
+                                    <!-- Contenu généré par JavaScript -->
+                                </div>
+                                <div class="schedule-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-color bg-red-200"></div>
+                                        <span>PHILOSOPHIE/Espagnol</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color bg-teal-200"></div>
+                                        <span>Mathématiques</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color bg-gray-200"></div>
+                                        <span>Gestion</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color bg-blue-200"></div>
+                                        <span>Anglais/EPS</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section centrale -->
+                    <div class="center-section">
+                        <!-- Travail à faire -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>Travail à faire</h2>
+                                <div class="task-count">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span id="taskCount">Nouvelle année</span>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="homeworkList">
+                                    <div class="empty-state new-year">
+                                        <i class="fas fa-rocket"></i>
+                                        <h3>Bonne rentrée scolaire 2025 ! 🎓</h3>
+                                        <p>C'est le début d'une nouvelle année scolaire.</p>
+                                        <p>Vos professeurs n'ont pas encore donné de devoirs.</p>
+                                        <small>Profitez de cette période pour bien vous organiser !</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carnet de correspondance -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-envelope"></i>
+                                    <h2>Carnet de correspondance</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="correspondence-section">
+                                    <div class="section-header">
+                                        <i class="fas fa-sparkles text-green-600"></i>
+                                        <h3>Début d'année scolaire</h3>
+                                    </div>
+                                    <p class="text-gray-600">Bienvenue dans votre nouvelle année scolaire !</p>
+                                    <p class="text-gray-600">Aucune absence enregistrée</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ressources pédagogiques -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-folder-open"></i>
+                                    <h2>Ressources pédagogiques</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="resourcesList">
+                                    <div class="empty-state new-year">
+                                        <i class="fas fa-books"></i>
+                                        <h3>Ressources à venir</h3>
+                                        <p>Vos professeurs ajouteront bientôt des ressources pédagogiques.</p>
+                                        <small>Elles apparaîtront ici</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agenda -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    <h2>Agenda</h2>
+                                </div>
+                                <button class="add-btn" onclick="showAddHomeworkModal()">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="card-content">
+                                <div class="empty-state">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <p>Début d'année - Agenda vierge</p>
+                                    <small>Organisez votre nouvelle année scolaire !</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panneau d'informations -->
+                    <div class="info-section">
+                        <!-- Informations -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-bell"></i>
+                                    <h2>Informations</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="infoList">
+                                    <div class="empty-state new-year">
+                                        <i class="fas fa-bell"></i>
+                                        <h3>Rentrée scolaire 2025</h3>
+                                        <p>Bienvenue ! Les informations importantes apparaîtront ici.</p>
+                                        <small>Bonne année scolaire !</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Discussions -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-comments"></i>
+                                    <h2>Discussions</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="empty-state">
+                                    <i class="fas fa-comments"></i>
+                                    <p>Aucun nouveau message</p>
+                                    <small>Les discussions avec vos professeurs apparaîtront ici</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Menu cantine -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <span class="emoji">🍽️</span>
+                                    <h2>Menu cantine</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="menu-nav">
+                                    <button class="nav-btn">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <span>Aujourd'hui</span>
+                                    <button class="nav-btn">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="empty-state">
+                                    <span class="emoji">🍽️</span>
+                                    <p>Menu bientôt disponible</p>
+                                    <small>Les menus seront publiés prochainement</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Mes données -->
+            <div id="mesDonneesPage" class="page">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Retour</span>
+                    </button>
+                    <div class="divider"></div>
+                    <h1>Mes données</h1>
+                </div>
+
+                <div class="data-page-layout">
+                    <div class="sidebar">
+                        <div class="sidebar-section">
+                            <h3>Compte</h3>
+                            <button class="sidebar-item active" data-section="profile">
+                                <i class="fas fa-user"></i>
+                                <span>Mon profil</span>
+                            </button>
+                            <button class="sidebar-item" data-section="security">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Sécurité</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="content-area">
+                        <!-- Section Profil -->
+                        <div id="profileSection" class="data-section active">
+                            <div class="info-banner">
+                                <h3>Informations du compte</h3>
+                                <p>Ces informations sont synchronisées avec votre compte académique.</p>
+                            </div>
+
+                            <div class="profile-content">
+                                <h3>Coordonnées</h3>
+                                <div class="profile-info">
+                                    <div class="profile-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="contact-info">
+                                        <div class="contact-item">
+                                            <i class="fas fa-phone"></i>
+                                            <div>
+                                                <div class="label">Téléphone</div>
+                                                <div class="value">+33 7 58 57 01 53</div>
+                                            </div>
+                                        </div>
+                                        <div class="contact-item">
+                                            <i class="fas fa-envelope"></i>
+                                            <div>
+                                                <div class="label">Email</div>
+                                                <div class="value email">glodeangiorgiana101@gmail.com</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="ine-section">
+                                    <h3>Numéro INE</h3>
+                                    <div class="ine-box">
+                                        <div class="ine-number">180730194BC</div>
+                                        <p>Identifiant National Élève - Ce numéro vous suit tout au long de votre scolarité</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-grid">
+                                    <div class="info-card">
+                                        <h4>Établissement</h4>
+                                        <p>LYCÉE LOUISE MICHEL</p>
+                                        <p>LYCÉE POLYVALENT RÉGIONAL</p>
+                                    </div>
+                                    <div class="info-card">
+                                        <h4>Classe</h4>
+                                        <p>T STMG3</p>
+                                        <p>Terminal Sciences et Technologies du Management</p>
+                                    </div>
+                                    <div class="info-card">
+                                        <h4>Année scolaire</h4>
+                                        <p>2025-2026</p>
+                                    </div>
+                                    <div class="info-card">
+                                        <h4>Statut</h4>
+                                        <p>Élève</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section Sécurité -->
+                        <div id="securitySection" class="data-section">
+                            <div class="security-content">
+                                <h3>Sécurisation du compte</h3>
+                                <p>Gérez les paramètres de sécurité de votre compte.</p>
+
+                                <div class="password-section">
+                                    <h4>Changer le mot de passe</h4>
+                                    
+                                    <div id="passwordSuccess" class="success-message" style="display: none;">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>Mot de passe mis à jour avec succès !</span>
+                                    </div>
+
+                                    <div id="passwordError" class="error-message" style="display: none;">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <span id="passwordErrorText"></span>
+                                    </div>
+
+                                    <form id="passwordForm" class="password-form">
+                                        <div class="form-group">
+                                            <label for="currentPassword">Mot de passe actuel</label>
+                                            <div class="input-group">
+                                                <input type="password" id="currentPassword" required>
+                                                <button type="button" class="toggle-password" onclick="togglePasswordField('currentPassword')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="newPassword">Nouveau mot de passe</label>
+                                            <div class="input-group">
+                                                <input type="password" id="newPassword" minlength="8" required>
+                                                <button type="button" class="toggle-password" onclick="togglePasswordField('newPassword')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                            <p class="help-text">Le mot de passe doit contenir au moins 8 caractères</p>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="confirmPassword">Confirmer le nouveau mot de passe</label>
+                                            <div class="input-group">
+                                                <input type="password" id="confirmPassword" required>
+                                                <button type="button" class="toggle-password" onclick="togglePasswordField('confirmPassword')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn-primary">Mettre à jour</button>
+                                            <button type="button" class="btn-secondary" onclick="resetPasswordForm()">Annuler</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="security-tips">
+                                    <h4>Conseils de sécurité</h4>
+                                    <ul>
+                                        <li>• Utilisez un mot de passe unique et complexe</li>
+                                        <li>• Ne partagez jamais vos identifiants</li>
+                                        <li>• Déconnectez-vous après utilisation</li>
+                                        <li>• Signalez toute activité suspecte</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Notes -->
+            <div id="notesPage" class="page">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Retour</span>
+                    </button>
+                    <div class="divider"></div>
+                    <h1>Notes</h1>
+                </div>
+
+                <div class="notes-container">
+                    <div class="tabs-container">
+                        <button class="tab-btn active" data-tab="notes" onclick="switchNotesTab('notes')">Mes notes</button>
+                        <button class="tab-btn" data-tab="bulletins" onclick="switchNotesTab('bulletins')">Bulletins</button>
+                    </div>
+
+                    <div id="notesTab" class="tab-content active">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <h2>Début de l'année scolaire 2025</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="notesDisplay">
+                                    <div class="empty-state new-year">
+                                        <i class="fas fa-star"></i>
+                                        <h3>Nouvelle année, nouveau départ ! ⭐</h3>
+                                        <p>C'est le début d'une nouvelle année scolaire.</p>
+                                        <p>Vos notes apparaîtront ici au fur et à mesure des évaluations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="bulletinsTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <h2>Bulletins scolaires</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="empty-state new-year">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <h3>Bulletins à venir 📋</h3>
+                                    <p>Les bulletins seront disponibles à la fin de chaque trimestre.</p>
+                                    <p>Premier bulletin attendu : fin décembre 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Vie scolaire -->
+            <div id="vieScolairePage" class="page">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Retour</span>
+                    </button>
+                    <div class="divider"></div>
+                    <h1>Vie scolaire</h1>
+                </div>
+
+                <div class="vie-scolaire-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-calendar"></i>
+                                <h2>Emploi du temps</h2>
+                            </div>
+                            <div class="schedule-nav">
+                                <button class="nav-btn" onclick="previousWeekVieScolaire()">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span id="currentWeekLabelVieScolaire">Semaine du 2 au 6 septembre</span>
+                                <button class="nav-btn" onclick="nextWeekVieScolaire()">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="schedule-table-container">
+                                <table class="schedule-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="time-column"></th>
+                                            <th id="mondayHeader">Lundi</th>
+                                            <th id="tuesdayHeader">Mardi</th>
+                                            <th id="wednesdayHeader">Mercredi</th>
+                                            <th id="thursdayHeader">Jeudi</th>
+                                            <th id="fridayHeader">Vendredi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="vieScolaireScheduleTable">
+                                        <!-- Généré par JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="schedule-legend">
+                                <div class="legend-item">
+                                    <div class="bg-red-200"></div>
+                                    <span>PHILOSOPHIE/Espagnol</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="bg-red-200"></div>
+                                    <span>Mathématiques</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="bg-red-200"></div>
+                                    <span>Gestion</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="bg-red-200"></div>
+                                    <span>Anglais/EPS</span>
+                                </div>
+                                <div class="">
+                                    <div class=""></div>
+                                    <span>Histoire-Géo</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="bg-red-200"></div>
+                                    <span>Management/Étude</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="bg-red-200"></div>
+                                    <span>Droit-Économie</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fas fa-user-times"></i>
+                                <h2>Absences et retards</h2>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div id="studentAbsencesList">
+                                <!-- Les absences d'élèves seront chargées ici -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Cahier de textes -->
+            <div id="cahierTextesPage" class="page">
+                <div class="page-header">
+                    <button class="back-btn" onclick="goToPage('home')">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Retour</span>
+                    </button>
+                    <div class="divider"></div>
+                    <h1>Cahier de textes</h1>
+                </div>
+
+                <div class="cahier-textes-container">
+                    <div class="tabs-container">
+                        <button class="tab-btn active" data-tab="contenu" onclick="switchCahierTextesTab('contenu')">Contenu et ressources</button>
+                        <button class="tab-btn" data-tab="travail" onclick="switchCahierTextesTab('travail')">Travail à faire</button>
+                    </div>
+
+                    <div id="contenuTab" class="tab-content active">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-book-open"></i>
+                                    <h2>Contenu des cours</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="empty-state new-year">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    <h3>Les cours commencent bientôt ! 👨‍🏫</h3>
+                                    <p>Vos professeurs publieront le contenu des cours dans cette section.</p>
+                                    <p>Première semaine de cours : septembre 2025</p>
+                                    <small>Préparez-vous pour une année enrichissante !</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="travailTab" class="tab-content">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-tasks"></i>
+                                    <h2>Travail à faire</h2>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="travailDisplay">
+                                    <div class="empty-state new-year">
+                                        <i class="fas fa-rocket"></i>
+                                        <h3>C'est parti pour une nouvelle année ! 🚀</h3>
+                                        <p>Aucun travail à faire n'a été donné pour le moment.</p>
+                                        <p>Les premiers devoirs apparaîtront après le début des cours.</p>
+                                        <div class="action-buttons">
+                                            <button class="btn-primary" onclick="location.reload();">Actualiser</button>
+                                            <button class="btn-secondary">Préparer l'organisation</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Panel d'administration (caché par défaut) -->
+    <div id="adminPanel" class="admin-panel" style="display: none;">
+        <div class="admin-header">
+            <div class="admin-brand">
+                <i class="fas fa-user-tie"></i>
+                <h1>Panel Professeur</h1>
+            </div>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Déconnexion</span>
+            </button>
+        </div>
+
+        <div class="admin-content">
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="notes" onclick="switchAdminTab('notes')">
+                    <i class="fas fa-star"></i>
+                    <span>Gestion des Notes</span>
+                </button>
+                <button class="admin-tab-btn" data-tab="homework" onclick="switchAdminTab('homework')">
+                    <i class="fas fa-tasks"></i>
+                    <span>Gestion des Devoirs</span>
+                </button>
+                <button class="admin-tab-btn" data-tab="schedule" onclick="switchAdminTab('schedule')">
+                    <i class="fas fa-calendar"></i>
+                    <span>Emploi du temps (Admin)</span>
+                  </button>
+                   
+                  <button class="admin-tab-btn" data-tab="bulletins" onclick="switchAdminTab('bulletins')">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Bulletins</span>
+                </button>
+            </div>
+            <div id="adminBulletinsTab" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>Gestion des Bulletins</h2>
+                    <input type="file" id="bulletinUpload" accept="application/pdf" onchange="uploadBulletin(event)">
+                </div>
+                <div id="adminBulletinsContainer" class="admin-container"></div>
+            </div>
+            
+
+            <div id="adminNotesTab" class="admin-tab-content active">
+                <div class="admin-section-header">
+                    <h2>Gestion des Notes</h2>
+                    <button class="btn-primary" onclick="showAddNoteModal()">
+                        <i class="fas fa-plus"></i>
+                        Ajouter une note
+                    </button>
+                </div>
+                <div id="adminNotesContainer" class="admin-container"></div>
+            </div>
+
+            <div id="adminHomeworkTab" class="admin-tab-content">
+                <div class="admin-section-header">
+                    <h2>Gestion des Devoirs</h2>
+                    <button class="btn-primary" onclick="showAddAdminHomeworkModal()">
+                        <i class="fas fa-plus"></i>
+                        Ajouter un devoir
+                    </button>
+                </div>
+                <div id="adminHomeworkContainer" class="admin-container"></div>
+            </div>
+
+        </div>
+        <!-- Onglet Emploi du temps (Admin) -->
+<div id="adminScheduleTab" class="admin-tab-content">
+    <div class="admin-section-header">
+      <h2>Emploi du temps (édition)</h2>
+      <p>Cliquez sur une case pour éditer le cours (prof / salle / marquer absent).</p>
+    </div>
+  
+    <div class="admin-container">
+      <div class="schedule-table-container">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th class="time-column"></th>
+              <th id="adminMondayHeader">Lundi</th>
+              <th id="adminTuesdayHeader">Mardi</th>
+              <th id="adminWednesdayHeader">Mercredi</th>
+              <th id="adminThursdayHeader">Jeudi</th>
+              <th id="adminFridayHeader">Vendredi</th>
+            </tr>
+          </thead>
+          <tbody id="adminScheduleTableBody">
+            <!-- Généré par JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal édition d'un cours (Admin) -->
+  <div id="editCourseModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Modifier le cours</h3>
+        <button class="close-btn" onclick="closeEditCourseModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <form id="editCourseForm" onsubmit="event.preventDefault(); saveEditedCourse();">
+        <input type="hidden" id="edit_weekIndex">
+        <input type="hidden" id="edit_dayIndex">
+        <input type="hidden" id="edit_timeSlot">
+  
+        <div class="form-group">
+          <label for="edit_subject">Matière</label>
+          <input type="text" id="edit_subject" readonly>
+        </div>
+        <div class="form-group">
+          <label for="edit_teacher">Professeur</label>
+          <input type="text" id="edit_teacher" required>
+        </div>
+        <div class="form-group">
+          <label for="edit_room">Salle</label>
+          <input type="text" id="edit_room" required>
+        </div>
+        <div class="form-group">
+          <label><input type="checkbox" id="edit_absent"> Prof. absent</label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeEditCourseModal()">Annuler</button>
+          <button type="button" class="btn-danger" onclick="markCourseCancelled()">Annuler le cours</button>
+          <button type="submit" class="btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+    </div>
+
+    <!-- Modals -->
+    <!-- Modal pour ajouter un devoir -->
+    <div id="addHomeworkModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un devoir</h3>
+                <button class="close-btn" onclick="hideAddHomeworkModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addHomeworkForm" onsubmit="addHomework(event)">
+                <div class="form-group">
+                    <label for="homeworkSubject">Matière</label>
+                    <select id="homeworkSubject" required>
+                        <option value="">Sélectionner une matière</option>
+                        <option value="MATHEMATIQUES">Mathématiques</option>
+                        <option value="FRANCAIS">Français</option>
+                        <option value="ANGLAIS LV1">Anglais LV1</option>
+                        <option value="ESPAGNOL LV2">Espagnol LV2</option>
+                        <option value="HISTOIRE-GEOGRAPHIE">Histoire-Géographie</option>
+                        <option value="SC.GESTION&NUMERIQUE">Sciences de Gestion & Numérique</option>
+                        <option value="MANAGEMENT">Management</option>
+                        <option value="DROIT ET ECONOMIE">Droit et Économie</option>
+                        <option value="ED.PHYSIQUE & SPORT.">EPS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="homeworkTeacher">Professeur</label>
+                    <input type="text" id="homeworkTeacher" placeholder="Nom du professeur" required>
+                </div>
+                <div class="form-group">
+                    <label for="homeworkTitle">Titre du devoir</label>
+                    <input type="text" id="homeworkTitle" placeholder="Ex: Exercices sur les dérivées" required>
+                </div>
+                <div class="form-group">
+                    <label for="homeworkDescription">Description</label>
+                    <textarea id="homeworkDescription" placeholder="Description détaillée du devoir" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="homeworkDueDate">Date d'échéance</label>
+                    <input type="date" id="homeworkDueDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="homeworkPriority">Priorité</label>
+                    <select id="homeworkPriority" required>
+                        <option value="low">Faible</option>
+                        <option value="medium" selected>Moyenne</option>
+                        <option value="high">Élevée</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hideAddHomeworkModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">Ajouter le devoir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+
+    <!-- Modals Admin -->
+    <div id="addNoteModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter une note</h3>
+                <button class="close-btn" onclick="hideAddNoteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addNoteForm" onsubmit="addNote(event)">
+                <div class="form-group">
+                    <label for="noteTrimester">Trimestre</label>
+                    <select id="noteTrimester" required>
+                        <option value="1">Trimestre 1</option>
+                        <option value="2">Trimestre 2</option>
+                        <option value="3">Trimestre 3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="noteSubject">Matière</label>
+                    <select id="noteSubject" required>
+                        <option value="MATHEMATIQUES">Mathématiques</option>
+                        <option value="FRANCAIS">Français</option>
+                        <option value="ANGLAIS LV1">Anglais LV1</option>
+                        <option value="ESPAGNOL LV2">Espagnol LV2</option>
+                        <option value="HISTOIRE-GEOGRAPHIE">Histoire-Géographie</option>
+                        <option value="SC.GESTION&NUMERIQUE">Sciences de Gestion & Numérique</option>
+                        <option value="MANAGEMENT">Management</option>
+                        <option value="DROIT ET ECONOMIE">Droit et Économie</option>
+                        <option value="ED.PHYSIQUE & SPORT.">EPS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="noteTeacher">Professeur</label>
+                    <select id="noteTeacher" required>
+                        <option value="DILGER J.">DILGER J.</option>
+                        <option value="HULIN J.">HULIN J.</option>
+                        <option value="ESTRADA F.">ESTRADA F.</option>
+                        <option value="MAALLOU N.">MAALLOU N.</option>
+                        <option value="RENE H.">RENE H.</option>
+                        <option value="NOEL K.">NOEL K.</option>
+                        <option value="KOUROUMA A.">KOUROUMA A.</option>
+                        <option value="GHDAS S.">GHDAS S.</option>
+                        <option value="LAURENT B.">LAURENT B.</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="studentGrade">Note (/20)</label>
+                    <input type="number" id="studentGrade" min="0" max="20" step="0.25" required>
+                </div>
+                <div class="form-group">
+                    <label for="classAverage">Moyenne de la classe (/20)</label>
+                    <input type="number" id="classAverage" min="0" max="20" step="0.25" required>
+                </div>
+                <div class="form-group">
+                    <label for="noteAppreciation">Appréciation</label>
+                    <textarea id="noteAppreciation" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hideAddNoteModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addAdminHomeworkModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un devoir</h3>
+                <button class="close-btn" onclick="hideAddAdminHomeworkModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addAdminHomeworkForm" onsubmit="addAdminHomework(event)">
+                <div class="form-group">
+                    <label for="adminHomeworkSubject">Matière</label>
+                    <select id="adminHomeworkSubject" required>
+                        <option value="MATHEMATIQUES">Mathématiques</option>
+                        <option value="FRANCAIS">Français</option>
+                        <option value="ANGLAIS LV1">Anglais LV1</option>
+                        <option value="ESPAGNOL LV2">Espagnol LV2</option>
+                        <option value="HISTOIRE-GEOGRAPHIE">Histoire-Géographie</option>
+                        <option value="SC.GESTION&NUMERIQUE">Sciences de Gestion & Numérique</option>
+                        <option value="MANAGEMENT">Management</option>
+                        <option value="DROIT ET ECONOMIE">Droit et Économie</option>
+                        <option value="ED.PHYSIQUE & SPORT.">EPS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="adminHomeworkTeacher">Professeur</label>
+                    <input type="text" id="adminHomeworkTeacher" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminHomeworkTitle">Titre</label>
+                    <input type="text" id="adminHomeworkTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminHomeworkDescription">Description</label>
+                    <textarea id="adminHomeworkDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="adminHomeworkDueDate">Date</label>
+                    <input type="date" id="adminHomeworkDueDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminHomeworkPriority">Priorité</label>
+                    <select id="adminHomeworkPriority" required>
+                        <option value="low">Faible</option>
+                        <option value="medium" selected>Moyenne</option>
+                        <option value="high">Élevée</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hideAddAdminHomeworkModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">Ajouter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="addAbsenceModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Signaler une absence</h3>
+                <button class="close-btn" onclick="hideAddAbsenceModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addAbsenceForm" onsubmit="addAbsence(event)">
+                <div class="form-group">
+                    <label for="absenceTeacher">Professeur</label>
+                    <input type="text" id="absenceTeacher" required>
+                </div>
+                <div class="form-group">
+                    <label for="absenceDate">Date</label>
+                    <input type="date" id="absenceDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="absenceReason">Raison</label>
+                    <select id="absenceReason" required>
+                        <option value="Maladie">Maladie</option>
+                        <option value="Formation">Formation</option>
+                        <option value="Congé personnel">Congé personnel</option>
+                        <option value="Réunion">Réunion</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hideAddAbsenceModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">Signaler</button>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+
+    <!-- Modal pour signaler une absence d'élève -->
+    <div id="addStudentAbsenceModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Signaler une absence</h3>
+                <button class="close-btn" onclick="hideAddStudentAbsenceModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addStudentAbsenceForm" onsubmit="addStudentAbsence(event)">
+                <div class="form-group">
+                    <label for="studentAbsenceDate">Date de l'absence</label>
+                    <input type="date" id="studentAbsenceDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="studentAbsenceType">Type</label>
+                    <select id="studentAbsenceType" required>
+                        <option value="">Sélectionner...</option>
+                        <option value="absence">Absence</option>
+                        <option value="retard">Retard</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="studentAbsenceReason">Motif</label>
+                    <textarea id="studentAbsenceReason" placeholder="Expliquez la raison de votre absence/retard..." required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hideAddStudentAbsenceModal()">Annuler</button>
+                    <button type="submit" class="btn-primary">Signaler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="api-client.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
