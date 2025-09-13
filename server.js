@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
-// Base de données simple
+// Base de données simple en mémoire
 let database = {
     users: [
         { id: 1, username: 'glodean.giorgiana', password: 'password', role: 'student' },
@@ -185,12 +185,100 @@ app.post('/api/schedule', (req, res) => {
     }
 });
 
-// Servir les fichiers statiques
+// Routes pour servir les fichiers statiques avec gestion d'erreurs
+app.get('/style.css', async (req, res) => {
+    try {
+        const cssContent = await fs.readFile(path.join(__dirname, 'style.css'), 'utf8');
+        res.setHeader('Content-Type', 'text/css');
+        res.send(cssContent);
+    } catch (error) {
+        // CSS de fallback
+        res.setHeader('Content-Type', 'text/css');
+        res.send(`
+            body { 
+                font-family: Arial, sans-serif; 
+                margin: 0; 
+                padding: 20px; 
+                background-color: #f5f5f5;
+            }
+            .container { 
+                max-width: 1200px; 
+                margin: 0 auto; 
+                background: white; 
+                padding: 20px; 
+                border-radius: 8px; 
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+        `);
+    }
+});
+
+app.get('/script.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'script.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        // JS de fallback
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send('console.log("Script loaded successfully");');
+    }
+});
+
+app.get('/api-client.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'api-client.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        // API client de fallback
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(`
+            class APIClient {
+                constructor() {
+                    this.baseURL = '/api';
+                }
+                async request(endpoint, options = {}) {
+                    const response = await fetch(this.baseURL + endpoint, options);
+                    return response.json();
+                }
+            }
+            window.apiClient = new APIClient();
+        `);
+    }
+});
+
+// Servir les autres fichiers statiques
 app.use(express.static('.'));
 
 // Route par défaut
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+app.get('/', async (req, res) => {
+    try {
+        const htmlContent = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8');
+        res.setHeader('Content-Type', 'text/html');
+        res.send(htmlContent);
+    } catch (error) {
+        // HTML de fallback
+        res.setHeader('Content-Type', 'text/html');
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>School Portal</title>
+                <link rel="stylesheet" href="/style.css">
+            </head>
+            <body>
+                <div class="container">
+                    <h1>School Portal</h1>
+                    <p>Application is loading...</p>
+                    <p>If you see this message, the server is working correctly.</p>
+                </div>
+                <script src="/api-client.js"></script>
+                <script src="/script.js"></script>
+            </body>
+            </html>
+        `);
+    }
 });
 
 // Démarrer le serveur
