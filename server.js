@@ -1,14 +1,16 @@
 const express = require('express');
+const fs = require('fs').promises;
+const path = require('path');
 const cors = require('cors');
 
 const app = express();
 
-// Middleware basique
+// Middleware
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
-// Base de données simple en mémoire
+// Base de données en mémoire
 let database = {
     users: [
         { id: 1, username: 'glodean.giorgiana', password: 'password', role: 'student' },
@@ -22,8 +24,7 @@ let database = {
     scheduleData: { weeks: [], courses: {} }
 };
 
-// Routes API simples
-
+// Routes API
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     const user = database.users.find(u => u.username === username && u.password === password);
@@ -131,187 +132,187 @@ app.post('/api/schedule', (req, res) => {
     res.json({ success: true });
 });
 
-// Routes pour servir les fichiers statiques
-app.get('/style.css', (req, res) => {
-    res.setHeader('Content-Type', 'text/css');
-    res.send(`
-        body { 
-            font-family: Arial, sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            background-color: #f5f5f5;
-        }
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #0056b3;
-        }
-    `);
-});
-
-app.get('/script.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.send(`
-        console.log('Script loaded successfully');
-        // Script de base pour éviter les erreurs
-        if (typeof window !== 'undefined') {
-            window.addEventListener('DOMContentLoaded', function() {
-                console.log('DOM loaded');
-            });
-        }
-    `);
-});
-
-app.get('/api-client.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.send(`
-        class APIClient {
-            constructor() {
-                this.baseURL = '/api';
+// Servir les fichiers statiques avec gestion d'erreurs
+app.get('/style.css', async (req, res) => {
+    try {
+        const cssContent = await fs.readFile(path.join(__dirname, 'style.css'), 'utf8');
+        res.setHeader('Content-Type', 'text/css');
+        res.send(cssContent);
+    } catch (error) {
+        // CSS de fallback si le fichier n'existe pas
+        res.setHeader('Content-Type', 'text/css');
+        res.send(`
+            body { 
+                font-family: Arial, sans-serif; 
+                margin: 0; 
+                padding: 20px; 
+                background-color: #f5f5f5;
             }
-            async request(endpoint, options = {}) {
-                try {
-                    const response = await fetch(this.baseURL + endpoint, options);
-                    return response.json();
-                } catch (error) {
-                    console.error('API Error:', error);
-                    return { error: 'Network error' };
+            .container { 
+                max-width: 1200px; 
+                margin: 0 auto; 
+                background: white; 
+                padding: 20px; 
+                border-radius: 8px; 
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+        `);
+    }
+});
+
+app.get('/script.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'script.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        // JS de fallback si le fichier n'existe pas
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send('console.log("Script loaded successfully");');
+    }
+});
+
+app.get('/api-client.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'api-client.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        // API client de fallback si le fichier n'existe pas
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(`
+            class APIClient {
+                constructor() {
+                    this.baseURL = '/api';
                 }
-            }
-            async login(username, password) {
-                return this.request('/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-            }
-            async getNotes() {
-                return this.request('/notes');
-            }
-            async addNote(note) {
-                return this.request('/notes', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(note)
-                });
-            }
-            async deleteNote(id) {
-                return this.request('/notes/' + id, { method: 'DELETE' });
-            }
-            async getHomework() {
-                return this.request('/homework');
-            }
-            async addHomework(homework) {
-                return this.request('/homework', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(homework)
-                });
-            }
-            async deleteHomework(id) {
-                return this.request('/homework/' + id, { method: 'DELETE' });
-            }
-            async getAbsences() {
-                return this.request('/absences');
-            }
-            async addAbsence(absence) {
-                return this.request('/absences', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(absence)
-                });
-            }
-            async deleteAbsence(id) {
-                return this.request('/absences/' + id, { method: 'DELETE' });
-            }
-            async getBulletins() {
-                return this.request('/bulletins');
-            }
-            async addBulletin(bulletin) {
-                return this.request('/bulletins', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(bulletin)
-                });
-            }
-            async deleteBulletin(id) {
-                return this.request('/bulletins/' + id, { method: 'DELETE' });
-            }
-            async getStudentAbsences() {
-                return this.request('/student-absences');
-            }
-            async addStudentAbsence(absence) {
-                return this.request('/student-absences', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(absence)
-                });
-            }
-            async deleteStudentAbsence(id) {
-                return this.request('/student-absences/' + id, { method: 'DELETE' });
-            }
-            async getSchedule() {
-                return this.request('/schedule');
-            }
-            async saveSchedule(scheduleData) {
-                return this.request('/schedule', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(scheduleData)
-                });
-            }
-        }
-        window.apiClient = new APIClient();
-    `);
-});
-
-// Route par défaut
-app.get('/', (req, res) => {
-    res.setHeader('Content-Type', 'text/html');
-    res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>School Portal</title>
-            <link rel="stylesheet" href="/style.css">
-        </head>
-        <body>
-            <div class="container">
-                <h1>School Portal</h1>
-                <p>Application is working correctly!</p>
-                <p>Server is running and responding to requests.</p>
-                <button class="btn" onclick="testAPI()">Test API</button>
-                <div id="result"></div>
-            </div>
-            <script src="/api-client.js"></script>
-            <script src="/script.js"></script>
-            <script>
-                function testAPI() {
-                    document.getElementById('result').innerHTML = 'Testing API...';
-                    apiClient.getNotes().then(result => {
-                        document.getElementById('result').innerHTML = 'API working! Notes: ' + result.length;
-                    }).catch(error => {
-                        document.getElementById('result').innerHTML = 'API Error: ' + error;
+                async request(endpoint, options = {}) {
+                    try {
+                        const response = await fetch(this.baseURL + endpoint, options);
+                        return response.json();
+                    } catch (error) {
+                        console.error('API Error:', error);
+                        return { error: 'Network error' };
+                    }
+                }
+                async login(username, password) {
+                    return this.request('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
                     });
                 }
-            </script>
-        </body>
-        </html>
-    `);
+                async getNotes() {
+                    return this.request('/notes');
+                }
+                async addNote(note) {
+                    return this.request('/notes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(note)
+                    });
+                }
+                async deleteNote(id) {
+                    return this.request('/notes/' + id, { method: 'DELETE' });
+                }
+                async getHomework() {
+                    return this.request('/homework');
+                }
+                async addHomework(homework) {
+                    return this.request('/homework', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(homework)
+                    });
+                }
+                async deleteHomework(id) {
+                    return this.request('/homework/' + id, { method: 'DELETE' });
+                }
+                async getAbsences() {
+                    return this.request('/absences');
+                }
+                async addAbsence(absence) {
+                    return this.request('/absences', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(absence)
+                    });
+                }
+                async deleteAbsence(id) {
+                    return this.request('/absences/' + id, { method: 'DELETE' });
+                }
+                async getBulletins() {
+                    return this.request('/bulletins');
+                }
+                async addBulletin(bulletin) {
+                    return this.request('/bulletins', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(bulletin)
+                    });
+                }
+                async deleteBulletin(id) {
+                    return this.request('/bulletins/' + id, { method: 'DELETE' });
+                }
+                async getStudentAbsences() {
+                    return this.request('/student-absences');
+                }
+                async addStudentAbsence(absence) {
+                    return this.request('/student-absences', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(absence)
+                    });
+                }
+                async deleteStudentAbsence(id) {
+                    return this.request('/student-absences/' + id, { method: 'DELETE' });
+                }
+                async getSchedule() {
+                    return this.request('/schedule');
+                }
+                async saveSchedule(scheduleData) {
+                    return this.request('/schedule', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(scheduleData)
+                    });
+                }
+            }
+            window.apiClient = new APIClient();
+        `);
+    }
+});
+
+// Servir les autres fichiers statiques
+app.use(express.static('.'));
+
+// Route par défaut
+app.get('/', async (req, res) => {
+    try {
+        const htmlContent = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8');
+        res.setHeader('Content-Type', 'text/html');
+        res.send(htmlContent);
+    } catch (error) {
+        // HTML de fallback si le fichier n'existe pas
+        res.setHeader('Content-Type', 'text/html');
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>School Portal</title>
+                <link rel="stylesheet" href="/style.css">
+            </head>
+            <body>
+                <div class="container">
+                    <h1>School Portal</h1>
+                    <p>Application is loading...</p>
+                    <p>If you see this message, the server is working correctly.</p>
+                </div>
+                <script src="/api-client.js"></script>
+                <script src="/script.js"></script>
+            </body>
+            </html>
+        `);
+    }
 });
 
 // Démarrer le serveur
