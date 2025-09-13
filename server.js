@@ -1,6 +1,4 @@
 const express = require('express');
-const fs = require('fs').promises;
-const path = require('path');
 const cors = require('cors');
 
 const app = express();
@@ -27,33 +25,25 @@ let database = {
 // Routes API simples
 
 app.post('/api/login', (req, res) => {
-    try {
-        const { username, password } = req.body;
-        const user = database.users.find(u => u.username === username && u.password === password);
-        
-        if (user) {
-            res.json({ success: true, user: { id: user.id, username: user.username, role: user.role } });
-        } else {
-            res.status(401).json({ error: 'Invalid credentials' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+    const { username, password } = req.body;
+    const user = database.users.find(u => u.username === username && u.password === password);
+    
+    if (user) {
+        res.json({ success: true, user: { id: user.id, username: user.username, role: user.role } });
+    } else {
+        res.status(401).json({ error: 'Invalid credentials' });
     }
 });
 
 app.post('/api/change-password', (req, res) => {
-    try {
-        const { username, oldPassword, newPassword } = req.body;
-        const user = database.users.find(u => u.username === username && u.password === oldPassword);
-        
-        if (user) {
-            user.password = newPassword;
-            res.json({ success: true });
-        } else {
-            res.status(401).json({ error: 'Invalid old password' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
+    const { username, oldPassword, newPassword } = req.body;
+    const user = database.users.find(u => u.username === username && u.password === oldPassword);
+    
+    if (user) {
+        user.password = newPassword;
+        res.json({ success: true });
+    } else {
+        res.status(401).json({ error: 'Invalid old password' });
     }
 });
 
@@ -62,22 +52,14 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-    try {
-        const newNote = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
-        database.notes.push(newNote);
-        res.json({ success: true, note: newNote });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    const newNote = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
+    database.notes.push(newNote);
+    res.json({ success: true, note: newNote });
 });
 
 app.delete('/api/notes/:id', (req, res) => {
-    try {
-        database.notes = database.notes.filter(note => note.id !== parseInt(req.params.id));
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    database.notes = database.notes.filter(note => note.id !== parseInt(req.params.id));
+    res.json({ success: true });
 });
 
 app.get('/api/homework', (req, res) => {
@@ -85,22 +67,14 @@ app.get('/api/homework', (req, res) => {
 });
 
 app.post('/api/homework', (req, res) => {
-    try {
-        const newHomework = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
-        database.homework.push(newHomework);
-        res.json({ success: true, homework: newHomework });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    const newHomework = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
+    database.homework.push(newHomework);
+    res.json({ success: true, homework: newHomework });
 });
 
 app.delete('/api/homework/:id', (req, res) => {
-    try {
-        database.homework = database.homework.filter(hw => hw.id !== parseInt(req.params.id));
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    database.homework = database.homework.filter(hw => hw.id !== parseInt(req.params.id));
+    res.json({ success: true });
 });
 
 app.get('/api/absences', (req, res) => {
@@ -108,22 +82,14 @@ app.get('/api/absences', (req, res) => {
 });
 
 app.post('/api/absences', (req, res) => {
-    try {
-        const newAbsence = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
-        database.absences.push(newAbsence);
-        res.json({ success: true, absence: newAbsence });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    const newAbsence = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
+    database.absences.push(newAbsence);
+    res.json({ success: true, absence: newAbsence });
 });
 
 app.delete('/api/absences/:id', (req, res) => {
-    try {
-        database.absences = database.absences.filter(absence => absence.id !== parseInt(req.params.id));
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    database.absences = database.absences.filter(absence => absence.id !== parseInt(req.params.id));
+    res.json({ success: true });
 });
 
 app.get('/api/bulletins', (req, res) => {
@@ -131,22 +97,14 @@ app.get('/api/bulletins', (req, res) => {
 });
 
 app.post('/api/bulletins', (req, res) => {
-    try {
-        const newBulletin = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
-        database.bulletins.push(newBulletin);
-        res.json({ success: true, bulletin: newBulletin });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    const newBulletin = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
+    database.bulletins.push(newBulletin);
+    res.json({ success: true, bulletin: newBulletin });
 });
 
 app.delete('/api/bulletins/:id', (req, res) => {
-    try {
-        database.bulletins = database.bulletins.filter(bulletin => bulletin.id !== parseInt(req.params.id));
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    database.bulletins = database.bulletins.filter(bulletin => bulletin.id !== parseInt(req.params.id));
+    res.json({ success: true });
 });
 
 app.get('/api/student-absences', (req, res) => {
@@ -154,22 +112,14 @@ app.get('/api/student-absences', (req, res) => {
 });
 
 app.post('/api/student-absences', (req, res) => {
-    try {
-        const newStudentAbsence = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
-        database.studentAbsences.push(newStudentAbsence);
-        res.json({ success: true, absence: newStudentAbsence });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    const newStudentAbsence = { id: Date.now(), ...req.body, createdAt: new Date().toISOString() };
+    database.studentAbsences.push(newStudentAbsence);
+    res.json({ success: true, absence: newStudentAbsence });
 });
 
 app.delete('/api/student-absences/:id', (req, res) => {
-    try {
-        database.studentAbsences = database.studentAbsences.filter(absence => absence.id !== parseInt(req.params.id));
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    database.studentAbsences = database.studentAbsences.filter(absence => absence.id !== parseInt(req.params.id));
+    res.json({ success: true });
 });
 
 app.get('/api/schedule', (req, res) => {
@@ -177,108 +127,191 @@ app.get('/api/schedule', (req, res) => {
 });
 
 app.post('/api/schedule', (req, res) => {
-    try {
-        database.scheduleData = req.body;
-        res.json({ success: true });
-    } catch (error) {
-        res.status(500).json({ error: 'Server error' });
-    }
+    database.scheduleData = req.body;
+    res.json({ success: true });
 });
 
-// Routes pour servir les fichiers statiques avec gestion d'erreurs
-app.get('/style.css', async (req, res) => {
-    try {
-        const cssContent = await fs.readFile(path.join(__dirname, 'style.css'), 'utf8');
-        res.setHeader('Content-Type', 'text/css');
-        res.send(cssContent);
-    } catch (error) {
-        // CSS de fallback
-        res.setHeader('Content-Type', 'text/css');
-        res.send(`
-            body { 
-                font-family: Arial, sans-serif; 
-                margin: 0; 
-                padding: 20px; 
-                background-color: #f5f5f5;
+// Routes pour servir les fichiers statiques
+app.get('/style.css', (req, res) => {
+    res.setHeader('Content-Type', 'text/css');
+    res.send(`
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f5f5f5;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+    `);
+});
+
+app.get('/script.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.send(`
+        console.log('Script loaded successfully');
+        // Script de base pour éviter les erreurs
+        if (typeof window !== 'undefined') {
+            window.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded');
+            });
+        }
+    `);
+});
+
+app.get('/api-client.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.send(`
+        class APIClient {
+            constructor() {
+                this.baseURL = '/api';
             }
-            .container { 
-                max-width: 1200px; 
-                margin: 0 auto; 
-                background: white; 
-                padding: 20px; 
-                border-radius: 8px; 
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-        `);
-    }
-});
-
-app.get('/script.js', async (req, res) => {
-    try {
-        const jsContent = await fs.readFile(path.join(__dirname, 'script.js'), 'utf8');
-        res.setHeader('Content-Type', 'application/javascript');
-        res.send(jsContent);
-    } catch (error) {
-        // JS de fallback
-        res.setHeader('Content-Type', 'application/javascript');
-        res.send('console.log("Script loaded successfully");');
-    }
-});
-
-app.get('/api-client.js', async (req, res) => {
-    try {
-        const jsContent = await fs.readFile(path.join(__dirname, 'api-client.js'), 'utf8');
-        res.setHeader('Content-Type', 'application/javascript');
-        res.send(jsContent);
-    } catch (error) {
-        // API client de fallback
-        res.setHeader('Content-Type', 'application/javascript');
-        res.send(`
-            class APIClient {
-                constructor() {
-                    this.baseURL = '/api';
-                }
-                async request(endpoint, options = {}) {
+            async request(endpoint, options = {}) {
+                try {
                     const response = await fetch(this.baseURL + endpoint, options);
                     return response.json();
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return { error: 'Network error' };
                 }
             }
-            window.apiClient = new APIClient();
-        `);
-    }
+            async login(username, password) {
+                return this.request('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+            }
+            async getNotes() {
+                return this.request('/notes');
+            }
+            async addNote(note) {
+                return this.request('/notes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(note)
+                });
+            }
+            async deleteNote(id) {
+                return this.request('/notes/' + id, { method: 'DELETE' });
+            }
+            async getHomework() {
+                return this.request('/homework');
+            }
+            async addHomework(homework) {
+                return this.request('/homework', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(homework)
+                });
+            }
+            async deleteHomework(id) {
+                return this.request('/homework/' + id, { method: 'DELETE' });
+            }
+            async getAbsences() {
+                return this.request('/absences');
+            }
+            async addAbsence(absence) {
+                return this.request('/absences', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(absence)
+                });
+            }
+            async deleteAbsence(id) {
+                return this.request('/absences/' + id, { method: 'DELETE' });
+            }
+            async getBulletins() {
+                return this.request('/bulletins');
+            }
+            async addBulletin(bulletin) {
+                return this.request('/bulletins', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bulletin)
+                });
+            }
+            async deleteBulletin(id) {
+                return this.request('/bulletins/' + id, { method: 'DELETE' });
+            }
+            async getStudentAbsences() {
+                return this.request('/student-absences');
+            }
+            async addStudentAbsence(absence) {
+                return this.request('/student-absences', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(absence)
+                });
+            }
+            async deleteStudentAbsence(id) {
+                return this.request('/student-absences/' + id, { method: 'DELETE' });
+            }
+            async getSchedule() {
+                return this.request('/schedule');
+            }
+            async saveSchedule(scheduleData) {
+                return this.request('/schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(scheduleData)
+                });
+            }
+        }
+        window.apiClient = new APIClient();
+    `);
 });
 
-// Servir les autres fichiers statiques
-app.use(express.static('.'));
-
 // Route par défaut
-app.get('/', async (req, res) => {
-    try {
-        const htmlContent = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8');
-        res.setHeader('Content-Type', 'text/html');
-        res.send(htmlContent);
-    } catch (error) {
-        // HTML de fallback
-        res.setHeader('Content-Type', 'text/html');
-        res.send(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>School Portal</title>
-                <link rel="stylesheet" href="/style.css">
-            </head>
-            <body>
-                <div class="container">
-                    <h1>School Portal</h1>
-                    <p>Application is loading...</p>
-                    <p>If you see this message, the server is working correctly.</p>
-                </div>
-                <script src="/api-client.js"></script>
-                <script src="/script.js"></script>
-            </body>
-            </html>
-        `);
-    }
+app.get('/', (req, res) => {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>School Portal</title>
+            <link rel="stylesheet" href="/style.css">
+        </head>
+        <body>
+            <div class="container">
+                <h1>School Portal</h1>
+                <p>Application is working correctly!</p>
+                <p>Server is running and responding to requests.</p>
+                <button class="btn" onclick="testAPI()">Test API</button>
+                <div id="result"></div>
+            </div>
+            <script src="/api-client.js"></script>
+            <script src="/script.js"></script>
+            <script>
+                function testAPI() {
+                    document.getElementById('result').innerHTML = 'Testing API...';
+                    apiClient.getNotes().then(result => {
+                        document.getElementById('result').innerHTML = 'API working! Notes: ' + result.length;
+                    }).catch(error => {
+                        document.getElementById('result').innerHTML = 'API Error: ' + error;
+                    });
+                }
+            </script>
+        </body>
+        </html>
+    `);
 });
 
 // Démarrer le serveur
