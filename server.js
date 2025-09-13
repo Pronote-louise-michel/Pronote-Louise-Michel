@@ -1,14 +1,16 @@
 const express = require('express');
+const fs = require('fs').promises;
+const path = require('path');
 const cors = require('cors');
 
 const app = express();
 
-// Middleware basique
+// Middleware
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
-// Base de données simple en mémoire
+// Base de données en mémoire
 let database = {
     users: [
         { id: 1, username: 'glodean.giorgiana', password: 'password', role: 'student' },
@@ -22,7 +24,7 @@ let database = {
     scheduleData: { weeks: [], courses: {} }
 };
 
-// Routes API simples
+// Routes API
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     const user = database.users.find(u => u.username === username && u.password === password);
@@ -130,70 +132,83 @@ app.post('/api/schedule', (req, res) => {
     res.json({ success: true });
 });
 
-// Servir les fichiers statiques
+// Servir les fichiers statiques avec gestion d'erreurs
+app.get('/style.css', async (req, res) => {
+    try {
+        const cssContent = await fs.readFile(path.join(__dirname, 'style.css'), 'utf8');
+        res.setHeader('Content-Type', 'text/css');
+        res.send(cssContent);
+    } catch (error) {
+        res.status(404).send('/* CSS file not found */');
+    }
+});
+
+app.get('/script.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'script.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        res.status(404).send('// Script file not found');
+    }
+});
+
+app.get('/api-client.js', async (req, res) => {
+    try {
+        const jsContent = await fs.readFile(path.join(__dirname, 'api-client.js'), 'utf8');
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(jsContent);
+    } catch (error) {
+        res.status(404).send('// API client file not found');
+    }
+});
+
+// Servir les autres fichiers statiques
 app.use(express.static('.'));
 
 // Route par défaut
-app.get('/', (req, res) => {
-    res.setHeader('Content-Type', 'text/html');
-    res.send(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>School Portal</title>
-            <style>
-                body { 
-                    font-family: Arial, sans-serif; 
-                    margin: 0; 
-                    padding: 20px; 
-                    background-color: #f5f5f5;
-                }
-                .container { 
-                    max-width: 1200px; 
-                    margin: 0 auto; 
-                    background: white; 
-                    padding: 20px; 
-                    border-radius: 8px; 
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                }
-                .btn {
-                    background: #007bff;
-                    color: white;
-                    border: none;
-                    padding: 10px 20px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    margin: 5px;
-                }
-                .btn:hover {
-                    background: #0056b3;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>School Portal</h1>
-                <p>Application is working correctly!</p>
-                <p>Server is running and responding to requests.</p>
-                <button class="btn" onclick="testAPI()">Test API</button>
-                <div id="result"></div>
-            </div>
-            <script>
-                function testAPI() {
-                    document.getElementById('result').innerHTML = 'Testing API...';
-                    fetch('/api/notes')
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('result').innerHTML = 'API working! Notes: ' + data.length;
-                        })
-                        .catch(error => {
-                            document.getElementById('result').innerHTML = 'API Error: ' + error;
-                        });
-                }
-            </script>
-        </body>
-        </html>
-    `);
+app.get('/', async (req, res) => {
+    try {
+        const htmlContent = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8');
+        res.setHeader('Content-Type', 'text/html');
+        res.send(htmlContent);
+    } catch (error) {
+        // HTML de fallback si le fichier n'existe pas
+        res.setHeader('Content-Type', 'text/html');
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>School Portal</title>
+                <style>
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        margin: 0; 
+                        padding: 20px; 
+                        background-color: #f5f5f5;
+                    }
+                    .container { 
+                        max-width: 1200px; 
+                        margin: 0 auto; 
+                        background: white; 
+                        padding: 20px; 
+                        border-radius: 8px; 
+                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>School Portal</h1>
+                    <p>Application is loading...</p>
+                    <p>If you see this message, the server is working correctly.</p>
+                </div>
+                <script src="/api-client.js"></script>
+                <script src="/script.js"></script>
+            </body>
+            </html>
+        `);
+    }
 });
 
 // Démarrer le serveur
